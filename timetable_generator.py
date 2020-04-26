@@ -7,6 +7,9 @@ fieldnames = ["Child Name", 'Monday Start', 'Monday End', 'Tuesday Start', 'Tues
 days = set([]) 	#SET
 
 lists_dictionary = {}
+secondary_lists_dictionary = {}
+
+emergency_stop = 0
 
 def test():
 	
@@ -26,6 +29,7 @@ def converts_nones(item):
 
 	else:
 		item = item.replace(':','')
+
 		return item
 
 def find_least_popular_day():
@@ -45,7 +49,13 @@ def find_least_popular_day():
 
 	#print(days_sorted)
 	least_popular_day = days_sorted[-1]
-	return(least_popular_day, days_sorted, start_days_dict)
+
+	if len(start_days_dict[least_popular_day]) < 1:
+		print("54!!!!!!\n\n\n\n")
+		least_popular_day = days_sorted[-2]
+	pprint(start_days_dict[least_popular_day])
+	#return(least_popular_day, days_sorted, start_days_dict)
+	return(least_popular_day)
 
 def extracting_info_from_file(preferences_file_name):
 	csvfile = open(preferences_file_name)
@@ -66,24 +76,20 @@ def extracting_info_from_file(preferences_file_name):
 				lists_dictionary[list_name] = [converts_nones(row[cell])]
 		
 
-def find_min_and_max_time(day):
-	for time in ['start', 'end']:	
-		lists_dictionary[f'{day}_{time}s_times'] = []
-		lists_dictionary[f'{day}_{time}s_times_no_any'] = []
-		for i in range(len(lists_dictionary[f'{day}_{time}s'])):
-			item = lists_dictionary[f'{day}_{time}s'][i]
-			if item:
-				lists_dictionary[f'{day}_{time}s_times'] += [item]
-				if item != 'Any':
-					item = int(item)
-					lists_dictionary[f'{day}_{time}s_times_no_any'].append(item)
+def find_min_and_max_time(day, time):
+	secondary_lists_dictionary[f'{day}_{time}s_times'] = []
+	for i in range(len(lists_dictionary[f'{day}_{time}s'])):
+		item = lists_dictionary[f'{day}_{time}s'][i]
+		if item:
+			secondary_lists_dictionary[f'{day}_{time}s_times'].append(int(item))
+		
 
-		pprint(lists_dictionary[f'{day}_{time}s_times_no_any'])
+	pprint(secondary_lists_dictionary[f'{day}_{time}s_times'])
 
-	maximum = max(lists_dictionary[f'{day}_{time}s_times_no_any'])
-	minimum = min(lists_dictionary[f'{day}_{time}s_times_no_any'])
-	print(f"max {day}_{time}s_times_no_any: {maximum}")
-	print(f"min {day}_{time}s_times_no_any: {minimum}")
+	maximum = max(secondary_lists_dictionary[f'{day}_{time}s_times'])
+	minimum = min(secondary_lists_dictionary[f'{day}_{time}s_times'])
+	#print(f"max {day}_{time}s_times: {maximum}")
+	#print(f"min {day}_{time}s_times: {minimum}")
 	return minimum, maximum
 
 def setup_blank_timetable(days=days):
@@ -102,28 +108,120 @@ def setup_blank_timetable(days=days):
 	return(timetable)
 
 
+def remove_student(student_index):
+	for l in lists_dictionary:		#list in list_dictionary
+		#print(f'LINE 107: {lists_dictionary[l][student_index]}')
+		
+		try:
+			item = lists_dictionary[l][student_index]
+			lists_dictionary[l].remove(item)
+		except IndexError:
+			print(f'IndexError - List {lists_dictionary[l]} did not have index {student_index}')
+		
+		except ValueError:
+			print(f'ValueError - List {lists_dictionary[l]} did not have index {student_index}')
+
+	#pprint(lists_dictionary)
+
+def find_student_info(student_index, lists_dictionary=lists_dictionary):
+	info = {}
+	for l in lists_dictionary:		#list in list_dictionary
+		#print(f'LINE 107: {lists_dictionary[l][student_index]}')
+		print(l)
+		try:
+			item = {lists_dictionary[l][student_index]}
+			info[l] = item
+
+		except IndexError:
+			print(f'IndexError - List {lists_dictionary[l]} did not have index {student_index}')
+		
+		except ValueError:
+			print(f'ValueError - List {lists_dictionary[l]} did not have index {student_index}')
+
+	return(info)
+
+
+
+def place_student(least_popular_day=None, min_start_time=None, max_start_time=None):
+	global emergency_stop
+	emergency_stop += 1
+	pprint(timetable)
+	print(emergency_stop)
+
+	if not least_popular_day:
+		least_popular_day = find_least_popular_day()
+
+	least_popular_day_list = lists_dictionary[f'{least_popular_day}_starts']
+
+	if not least_popular_day_list:
+		least_popular_day = find_least_popular_day()
+
+	elif min_start_time == None or max_start_time==None:
+		min_start_time, max_start_time = find_min_and_max_time(least_popular_day, 'start')
+	timetable_day = timetable[least_popular_day]
+	#pprint(f'timetable_day {timetable_day}')
+	print(f'154 {min_start_time}')
+
+	print(f'LEAST POPULAR DAY LIST {least_popular_day_list}, {emergency_stop}')
+	#print(least_popular_day_list.index(str(min_start_time)))
+	try:
+		student_index = lists_dictionary[f'{least_popular_day}_starts'].index(str(min_start_time))
+	except ValueError:
+		student_index = 0
+
+	if not timetable_day[min_start_time]:		#if the time is none, aka no student has taken it yet
+		timetable_day[min_start_time] = lists_dictionary[f'child_names'][student_index]
+		remove_student(student_index)
+		#print(student_index, timetable_day[min_start_time])
+
+	else:
+		print(f'MIN START TIME {min_start_time} ')
+		#see if student can do next timeslot
+		info = find_student_info(student_index)
+
+		#test if going to next timeslot clashes with end_time
+		student_end_time = lists_dictionary[f'{least_popular_day}_ends'][student_index]
+		print(f'STUDENT END TIME {student_end_time}')
+
+		#move time to next timeslot
+		if student_end_time != None:
+			if str(min_start_time).endswith('30'):
+				min_start_time += 70
+				print('30!')
+			else:
+				min_start_time += 30
+
+			if min_start_time >= int(student_end_time):
+				print('OH NO')
+			
+			else:
+				lists_dictionary[f'{least_popular_day}_starts'][student_index] = min_start_time
+				place_student(least_popular_day, min_start_time, max_start_time)
+		else:
+			#place_student()
+			print('\n')
+		#pprint(f'INFO : {info}')
+
+	#print(f'{timetable_day[min_start_time]}')
+
+	if emergency_stop > 9:
+		print('Yikes')
+	elif lists_dictionary['child_names']:
+		place_student(least_popular_day)
+
+
+
 #START
 extracting_info_from_file(preferences_file_name)
-timetable = setup_blank_timetable()
-
-least_popular_day, days_sorted, days_dict = find_least_popular_day()
-
-for day in days_sorted:
-	find_min_and_max_time(day)
-
-setup_blank_timetable()
-
-min_time, max_time = find_min_and_max_time(least_popular_day)
-timetable_day = timetable[least_popular_day]
-pprint(f'timetable_day {timetable_day}')
-print(min_time)
-if not timetable_day[min_time]:
-	print('Yippee!')
-print(f'{timetable_day[min_time]}')
-
-if lists_dictionary['child_names']:
-	print('eww kids')
 
 #pprint(lists_dictionary)
+
+timetable = setup_blank_timetable()
+
+least_popular_day = find_least_popular_day()
+
+place_student(least_popular_day)
+
+pprint(timetable)
 
 #print(test())
