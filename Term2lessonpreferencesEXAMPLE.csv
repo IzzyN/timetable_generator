@@ -1,0 +1,11 @@
+Child Name,Monday Start,Monday End,Tuesday Start,Tuesday End,Wednesday Start,Wednesday End,Thursday Start,Thursday End
+Student One,16:30,Any,None,None,16:30,Any,16:30,Any
+Student Two,None,None,14:30,Any,None,None,None,None
+Student Three,15:30,Any,None,None,None,None,13:00,16:00
+Student Four,None,None,10:00,10:30,16:00,18:00,17:00,18:00
+Student Five,None,None,16:00,18:00,16:00,18:00,None,None
+Student Six,None,None,None,None,16:00,Any,16:00,Any
+Student Seven,None,None,3:30,Any,15:30,Any,15:30,Any
+Student Eight,Any,Any,Any,Any,Any,Any,Any,Any
+Student Nine,Any,Any,Any,15:00,Any,Any,Any,15:00
+Student Ten,10:00,14:00,10:00,15:00,13:00,16:00,13:00,16:00
