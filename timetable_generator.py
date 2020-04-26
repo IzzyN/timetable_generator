@@ -80,16 +80,46 @@ def find_min_and_max_time(day):
 
 		pprint(lists_dictionary[f'{day}_{time}s_times_no_any'])
 
-	print(f"max {day}_{time}s_times_no_any: {max(lists_dictionary[f'{day}_{time}s_times_no_any'])}")
-	print(f"min {day}_{time}s_times_no_any: {min(lists_dictionary[f'{day}_{time}s_times_no_any'])}")
+	maximum = max(lists_dictionary[f'{day}_{time}s_times_no_any'])
+	minimum = min(lists_dictionary[f'{day}_{time}s_times_no_any'])
+	print(f"max {day}_{time}s_times_no_any: {maximum}")
+	print(f"min {day}_{time}s_times_no_any: {minimum}")
+	return minimum, maximum
+
+def setup_blank_timetable(days=days):
+	timetable = {}
+	times = []
 
 
+	for day in days:
+		timetable[day] = {}
+		for time in range(1000, 2000, 50):
+			if str(time)[-2:] == '50':
+				time -= 20
+			#times.append(time)
+			timetable[day][time] = None
+	#pprint(timetable)
+	return(timetable)
+
+
+#START
 extracting_info_from_file(preferences_file_name)
+timetable = setup_blank_timetable()
 
 least_popular_day, days_sorted, days_dict = find_least_popular_day()
 
 for day in days_sorted:
 	find_min_and_max_time(day)
+
+setup_blank_timetable()
+
+min_time, max_time = find_min_and_max_time(least_popular_day)
+timetable_day = timetable[least_popular_day]
+pprint(f'timetable_day {timetable_day}')
+print(min_time)
+if not timetable_day[min_time]:
+	print('Yippee!')
+print(f'{timetable_day[min_time]}')
 
 if lists_dictionary['child_names']:
 	print('eww kids')
