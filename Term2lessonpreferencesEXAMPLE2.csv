@@ -1,0 +1,21 @@
+Child Name,Monday Start,Monday End,Tuesday Start,Tuesday End,Wednesday Start,Wednesday End,Thursday Start,Thursday End
+Student One,16:30,18:00,None,None,16:30,18:00,16:30,18:00
+Student Two,None,None,14:30,18:00,None,None,None,None
+Student Three,15:30,18:00,None,None,None,None,13:00,16:00
+Student Four,None,None,10:00,10:30,16:00,18:00,17:00,18:00
+Student Five,None,None,16:00,18:00,16:00,18:00,None,None
+Student Six,None,None,None,None,16:00,18:00,16:00,18:00
+Student Seven,None,None,13:30,18:00,15:30,18:00,15:30,18:00
+Student Eight,10:00,18:00,10:00,18:00,10:00,18:00,10:00,18:00
+Student Nine,10:00,18:00,10:00,15:00,10:00,18:00,10:00,15:00
+Student Ten,10:00,14:00,10:00,15:00,13:00,16:00,13:00,16:00
+Student Eleven,14:00,15:00,10:00,11:00,None,None,None,None
+Student Twelve,16:00,20:00,16:00,18:00,11:00,16:00,14:00,14:30
+Student Thirteen,None,None,15:30,18:00,14:00,16:00,None,None
+Student Fourteen,16:00,17:00,None,None,None,None,13:00,18:00
+Student Fifteen,17:00,20:00,17:00,20:00,17:00,20:00,17:00,20:00
+Student Sixteen,None,None,16:00,17:00,None,None,None,None
+Student Seventeen,18:00,20:00,None,None,16:30,18:00,None,None
+Student Eighteen ,None,None,15:00,17:00,12:00,20:00,14:00,18:00
+Student Nineteen,15:00,19:00,None,None,None,None,None,None
+Student Twenty,None,None,13:00,14:00,None,None,17:00,20:00
