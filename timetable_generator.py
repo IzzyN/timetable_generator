@@ -12,7 +12,7 @@ secondary_lists_dictionary = {}
 emergency_stop = 0
 
 def test():
-	
+	assert increment_timeslot('1000') == '1030'
 	return('Test passes')
 
 def options_counter(day_list):
@@ -140,13 +140,57 @@ def find_student_info(student_index, lists_dictionary=lists_dictionary):
 
 	return(info)
 
+def increment_timeslot(time):
+	time = int(time)
+	if str(time).endswith('30'):
+		time += 70
+		print('30!')
+	else:
+		time += 30
+
+	return(str(time))
+
 
 
 def place_student(least_popular_day=None, min_start_time=None, max_start_time=None):
-	global emergency_stop
-	emergency_stop += 1
+	least_popular_day = find_least_popular_day()
+
+
+	#find earliest start time. 
+	min_start_time, max_start_time = find_min_and_max_time(least_popular_day, 'start')
+
+	least_popular_day_list = lists_dictionary[f'{least_popular_day}_starts']
+	timetable_day = timetable[least_popular_day]
+
+	#establishing student_index
+	try:
+		student_index = lists_dictionary[f'{least_popular_day}_starts'].index(str(min_start_time))
+	except ValueError:
+		student_index = 0
+
+	#check if timeslot is available
+	if not timetable_day[min_start_time]:		#if the time is none, aka no student has taken it yet
+		timetable_day[min_start_time] = lists_dictionary[f'child_names'][student_index]
+		remove_student(student_index)
+		pprint(timetable)
+
+
+	#if timeslot isn't available, increment time slot.
+	else:
+		min_start_time = increment_timeslot(min_start_time)
+		#rewrite new start time to correct list
+		lists_dictionary[f'{least_popular_day}_starts'][student_index] = min_start_time
+		pprint(f"LINE 182 {lists_dictionary[f'{least_popular_day}_starts']}")
+
+	#if incremented timeslot is too late, remove both start and end times. 
+
+
+	#give timeslot, remove the student.
+
+
+
+	"""
 	pprint(timetable)
-	print(emergency_stop)
 
 	if not least_popular_day:
 		least_popular_day = find_least_popular_day()
@@ -196,18 +240,15 @@ def place_student(least_popular_day=None, min_start_time=None, max_start_time=No
 			
 			else:
 				lists_dictionary[f'{least_popular_day}_starts'][student_index] = min_start_time
-				place_student(least_popular_day, min_start_time, max_start_time)
+				#place_student(least_popular_day, min_start_time, max_start_time)
 		else:
 			#place_student()
 			print('\n')
+
+			"""
 		#pprint(f'INFO : {info}')
 
 	#print(f'{timetable_day[min_start_time]}')
-
-	if emergency_stop > 9:
-		print('Yikes')
-	elif lists_dictionary['child_names']:
-		place_student(least_popular_day)
 
 
 
@@ -218,10 +259,14 @@ extracting_info_from_file(preferences_file_name)
 
 timetable = setup_blank_timetable()
 
-least_popular_day = find_least_popular_day()
-
-place_student(least_popular_day)
-
 pprint(timetable)
 
-#print(test())
+print(test())
+
+while lists_dictionary['child_names']:
+	emergency_stop += 1
+	if emergency_stop < 20:
+		place_student()
+	else:
+		print('staap')
+		break
